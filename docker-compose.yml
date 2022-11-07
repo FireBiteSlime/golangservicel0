@@ -1,0 +1,33 @@
+version: '3.4'
+networks:
+  golangservicel0: 
+    external: false
+volumes:
+  postgresql-data:
+  
+services:
+  golangservicel0:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+      args:
+        GO_IMAGE: 'golang'
+        GO_IMAGE_VERSION: '1.17'
+    networks:
+      - default
+    ports:
+      - 8080:8080
+  postgresql:
+    image: postgres:latest
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: default
+      POSTGRES_PASSWORD: default
+      POSTGRES_DB: default
+      PGPORT: 5434
+    networks: 
+      - golangservicel0
+    ports:
+      - "5434:5434"
+    volumes:
+      - postgresql-data:/var/lib/postgresql
